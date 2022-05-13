@@ -2,11 +2,12 @@
 
 function arrayDiff(a, b) {
     if(b.length === 0) return a;
-    let result = b.slice();
+    if(a.length === 0) return [];
+    let result = a.slice();
 
     b.forEach((num1, index) => {
 
-        result = a.filter(num2 => {
+        result = result.filter(num2 => {
             if(num1 !== num2) {
                 return num2;
             }
@@ -19,5 +20,5 @@ function arrayDiff(a, b) {
     console.log(result);
 }
 
-// arrayDiff([1,2], [1]);
-arrayDiff([1,2,3], [1,2]);
+arrayDiff([1,2], [1])
+// arrayDiff([1,2,3], [1,2]);
