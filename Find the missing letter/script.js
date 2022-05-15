@@ -19,7 +19,7 @@ function findMissingLetter(array) {
 
         for(let i = 0; i < array.length; i++) {
             if(result[i] !== array[i].toLowerCase()) {
-                if(isLowerCase(result[i])) {
+                if(isLowerCase(array[i])) {
                     return result[i];
                 } else {
                     return result[i].toUpperCase();
@@ -32,4 +32,4 @@ function findMissingLetter(array) {
 }
 
 console.log(findMissingLetter(['O','Q','R','S']));
-// console.log(findMissingLetter(['a','b','c','d','f']));
+console.log(findMissingLetter(['a','b','c','d','f']));
