@@ -2,52 +2,70 @@
 
 function antBridge(ants, terrain) {
   if (terrain.includes(".")) {
-    const calcGapLength = function () {
-      let index = terrain.indexOf(".");
+    const calcGapLength = function (index) {
+      let i = terrain.indexOf(".", index);
+      if (i === -1) return -1;
+
       let length = 0;
-      while (terrain[index] === ".") {
-        index++;
+      while (terrain[i] === ".") {
+        i++;
         length++;
       }
 
       return {
         length: length,
-        index: index - length,
+        index: i - length,
       };
     };
 
-    let gap = calcGapLength();
+    const calcAllGaps = function () {
+      let array = [],
+        indexOfArray = 0,
+        index = 0;
 
-    //   console.log(gap); // test
-
-    const antsGoThroughBridge = function () {
-      let array = ants.split("");
-      let bridge = [];
-      let remain = [];
-
-      let i = array.length - 1;
-      for (; i >= array.length - (gap.length + 2); i--) {
-        bridge.unshift(array[i]);
+      while (calcGapLength(index) !== -1) {
+        array.push(calcGapLength(index));
+        index = array[indexOfArray].index + array[indexOfArray]["length"];
+        indexOfArray++;
       }
 
-      for (; i >= 0; i--) {
-        remain.unshift(array[i]);
-      }
-
-      // console.log(remain); // array
-      // console.log(bridge); // array
-
-      return {
-        bridge: bridge.join(""),
-        remain: remain.join(""),
-      };
+      return array;
     };
 
-    //   let antsBridge = antsGoThroughBridge().bridge;
-    //   let remainAnts = antsGoThroughBridge().remain;
-    let results = antsGoThroughBridge();
+    return calcAllGaps();
 
-    return results.bridge + results.remain;
+    // let gap = calcGapLength();
+
+    // //   console.log(gap); // test
+
+    // const antsGoThroughBridge = function () {
+    //   let array = ants.split("");
+    //   let bridge = [];
+    //   let remain = [];
+
+    //   let i = array.length - 1;
+    //   for (; i >= array.length - (gap.length + 2); i--) {
+    //     bridge.unshift(array[i]);
+    //   }
+
+    //   for (; i >= 0; i--) {
+    //     remain.unshift(array[i]);
+    //   }
+
+    //   // console.log(remain); // array
+    //   // console.log(bridge); // array
+
+    //   return {
+    //     bridge: bridge.join(""),
+    //     remain: remain.join(""),
+    //   };
+    // };
+
+    // //   let antsBridge = antsGoThroughBridge().bridge;
+    // //   let remainAnts = antsGoThroughBridge().remain;
+    // let results = antsGoThroughBridge();
+
+    // return results.bridge + results.remain;
   }
 
   return ants;
