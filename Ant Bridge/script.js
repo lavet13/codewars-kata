@@ -32,43 +32,76 @@ function antBridge(ants, terrain) {
       return array;
     };
 
-    return calcAllGaps();
+    let gaps = calcAllGaps();
+    console.log(gaps);
 
-    // let gap = calcGapLength();
+    const antsGoThroughBridge = function (ants, length) {
+      let array = ants.split("");
+      let bridge = [];
+      let remain = [];
 
-    // //   console.log(gap); // test
+      let i = array.length - 1;
+      for (; i >= array.length - (length + 2); i--) {
+        bridge.unshift(array[i]);
+      }
 
-    // const antsGoThroughBridge = function () {
-    //   let array = ants.split("");
-    //   let bridge = [];
-    //   let remain = [];
+      for (; i >= 0; i--) {
+        remain.unshift(array[i]);
+      }
 
-    //   let i = array.length - 1;
-    //   for (; i >= array.length - (gap.length + 2); i--) {
-    //     bridge.unshift(array[i]);
-    //   }
+      // console.log(remain); // array
+      // console.log(bridge); // array
 
-    //   for (; i >= 0; i--) {
-    //     remain.unshift(array[i]);
-    //   }
+      return {
+        bridge: bridge.join(""),
+        remain: remain.join(""),
+        result: bridge.join("") + remain.join(""),
+      };
+    };
 
-    //   // console.log(remain); // array
-    //   // console.log(bridge); // array
+    gaps.forEach(({ length }) => {
+      ants = antsGoThroughBridge(ants, length).result;
+      console.log(ants);
+    });
 
-    //   return {
-    //     bridge: bridge.join(""),
-    //     remain: remain.join(""),
-    //   };
-    // };
-
-    // //   let antsBridge = antsGoThroughBridge().bridge;
-    // //   let remainAnts = antsGoThroughBridge().remain;
-    // let results = antsGoThroughBridge();
-
-    // return results.bridge + results.remain;
+    return ants;
   }
 
   return ants;
 }
 
-console.log(antBridge("GFEDCBA", "------------...-----------"));
+console.log(
+  `result is ${antBridge("GFEDCBA", "------------...----...--....-----")}`
+);
+
+/*
+
+Test Results:
+
+hard
+Log
+[ { length: 4, index: 6 }, { length: 1, index: 11 } ]
+
+expected 'BAGFEDC' to equal 'AGFEDCB'
+
+
+many gaps
+Log
+[ { length: 1, index: 1 },
+  { length: 1, index: 3 },
+  { length: 1, index: 5 } ]
+
+expected 'BAGFEDC' to equal 'GFEDCBA'
+
+
+random
+Log
+[ { length: 1, index: 2 } ]
+Random test #1 : In=CBA --.---- Out=CBA
+[ { length: 2, index: 2 }, { length: 2, index: 5 } ]
+
+Random test #2 : In=GFEDCBA --..-..------ Out=GFEDCBA
+
+expected 'AGFEDCB' to equal 'GFEDCBA'
+
+*/
