@@ -55,14 +55,17 @@ ants = ${ants}`);
       i = index;
       for (; i >= index - 1; i--) {
         remain.unshift(array[i]);
-        array.splice(index, 1);
+        bridge.splice(index, 1);
       }
+
+      // TODO
+      // what does splice do? what is it return?
 
       // FIXME
       // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
 
       console.log(remain); // array
-      // console.log(bridge); // array
+      console.log(bridge); // array
 
       return {
         bridge: bridge.join(""),
