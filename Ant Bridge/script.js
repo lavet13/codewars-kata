@@ -1,6 +1,9 @@
 "use strict";
 
 function antBridge(ants, terrain) {
+  console.log(`terrain = ${terrain}
+
+ants = ${ants}`);
   if (terrain.includes(".")) {
     const calcGapLength = function (index) {
       let i = terrain.indexOf(".", index);
@@ -35,21 +38,30 @@ function antBridge(ants, terrain) {
     let gaps = calcAllGaps();
     console.log(gaps);
 
-    const antsGoThroughBridge = function (ants, length) {
+    const antsGoThroughBridge = function (ants, length, index) {
       let array = ants.split("");
       let bridge = [];
       let remain = [];
 
       let i = array.length - 1;
       for (; i >= array.length - (length + 2); i--) {
-        bridge.unshift(array[i]);
+        bridge.push(array[i]); // method "push" reverse ant-bridges, which what i want at the beginning
       }
 
       for (; i >= 0; i--) {
-        remain.unshift(array[i]);
+        remain.unshift(array[i]); // save order of the elements
       }
 
-      // console.log(remain); // array
+      i = index;
+      for (; i >= index - 1; i--) {
+        remain.unshift(array[i]);
+        array.splice(index, 1);
+      }
+
+      // FIXME
+      // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
+
+      console.log(remain); // array
       // console.log(bridge); // array
 
       return {
@@ -59,8 +71,8 @@ function antBridge(ants, terrain) {
       };
     };
 
-    gaps.forEach(({ length }) => {
-      ants = antsGoThroughBridge(ants, length).result;
+    gaps.forEach(({ length, index }) => {
+      ants = antsGoThroughBridge(ants, length, index).result;
       console.log(ants);
     });
 
@@ -70,9 +82,10 @@ function antBridge(ants, terrain) {
   return ants;
 }
 
-console.log(
-  `result is ${antBridge("GFEDCBA", "------------...----...--....-----")}`
-);
+// console.log(
+//   `result is ${antBridge("GFEDCBA", "------------...----...--....-----")}`
+// );
+console.log(`result is ${antBridge("BAGFEDC", "------....-.")}`); // AGFEDCB
 
 /*
 
