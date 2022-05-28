@@ -1,16 +1,16 @@
-"use strict";
+'use strict';
 
 function antBridge(ants, terrain) {
   console.log(`terrain = ${terrain}
 
 ants = ${ants}`);
-  if (terrain.includes(".")) {
+  if (terrain.includes('.')) {
     const calcGapLength = function (index) {
-      let i = terrain.indexOf(".", index);
+      let i = terrain.indexOf('.', index);
       if (i === -1) return -1;
 
       let length = 0;
-      while (terrain[i] === ".") {
+      while (terrain[i] === '.') {
         i++;
         length++;
       }
@@ -28,7 +28,7 @@ ants = ${ants}`);
 
       while (calcGapLength(index) !== -1) {
         array.push(calcGapLength(index));
-        index = array[indexOfArray].index + array[indexOfArray]["length"];
+        index = array[indexOfArray].index + array[indexOfArray]['length'];
         indexOfArray++;
       }
 
@@ -39,8 +39,9 @@ ants = ${ants}`);
     console.log(gaps);
 
     const antsGoThroughBridge = function (ants, length, index) {
-      let array = ants.split("");
+      let array = ants.split('');
       let bridge = [];
+      let cross = [];
       let remain = [];
 
       let i = array.length - 1;
@@ -48,18 +49,30 @@ ants = ${ants}`);
         bridge.push(array[i]); // method "push" reverse ant-bridges, which what i want at the beginning
       }
 
+      // TODO need to create some sort of loop that can compute how much left ants to cross the bridge until terrain allows
       for (; i >= 0; i--) {
-        remain.unshift(array[i]); // save order of the elements
+        if (terrain[i] < terrain.length) {
+          // BUG
+          cross.push(array[i]);
+        } else {
+          remain.unshift(array[i]); // save order of the elements
+        }
       }
 
-      i = index;
-      for (; i >= index - 1; i--) {
+      // console.log(remain); // array
+      // console.log(bridge); // array
+
+      for (let i = array.length - 1; i >= array.length - 2; i--) {
         remain.unshift(array[i]);
-        bridge.splice(index, 1);
+        bridge.shift();
       }
 
-      // TODO
-      // what does splice do? what is it return?
+      cross.forEach(ant => {
+        // bridge.push(ant);
+        console.log(ant);
+      });
+
+      bridge.reverse();
 
       // FIXME
       // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
@@ -68,9 +81,9 @@ ants = ${ants}`);
       console.log(bridge); // array
 
       return {
-        bridge: bridge.join(""),
-        remain: remain.join(""),
-        result: bridge.join("") + remain.join(""),
+        bridge: bridge.join(''),
+        remain: remain.join(''),
+        result: bridge.join('') + remain.join(''),
       };
     };
 
@@ -85,39 +98,58 @@ ants = ${ants}`);
   return ants;
 }
 
-// console.log(
-//   `result is ${antBridge("GFEDCBA", "------------...----...--....-----")}`
-// );
-console.log(`result is ${antBridge("BAGFEDC", "------....-.")}`); // AGFEDCB
+// console.log(`result is ${antBridge("GFEDCBA", "------------...-----------")}`); // EDCBAGF
+console.log(`result is ${antBridge('GFEDCBA', '------....-.---')}`); // AGFEDCB
 
 /*
 
 Test Results:
 
+
+example
+Log
+terrain = ------------...-----------
+
+ants = GFEDCBA
+[ { length: 3, index: 12 } ]
+EDCGF
+
+expected 'EDCGF' to equal 'EDCBAGF'
+
+
+
 hard
 Log
-[ { length: 4, index: 6 }, { length: 1, index: 11 } ]
+terrain = ------....-.---
 
-expected 'BAGFEDC' to equal 'AGFEDCB'
+ants = GFEDCBA
+[ { length: 4, index: 6 }, { length: 1, index: 11 } ]
+FEDCBAG
+expected 'FEDCBAG' to equal 'AGFEDCB'
+
+
+two gaps
+Log
+terrain = ------------...-----..----
+
+ants = GFEDCBA
+[ { length: 3, index: 12 }, { length: 2, index: 20 } ]
+EDCBAGF
+expected 'EDCBAGF' to equal 'BAGFEDC'
 
 
 many gaps
 Log
+terrain = -.-.-.-
+
+ants = GFEDCBA
 [ { length: 1, index: 1 },
   { length: 1, index: 3 },
   { length: 1, index: 5 } ]
+CBAGFED
+expected 'CBAGFED' to equal 'GFEDCBA'
 
-expected 'BAGFEDC' to equal 'GFEDCBA'
 
 
-random
-Log
-[ { length: 1, index: 2 } ]
-Random test #1 : In=CBA --.---- Out=CBA
-[ { length: 2, index: 2 }, { length: 2, index: 5 } ]
-
-Random test #2 : In=GFEDCBA --..-..------ Out=GFEDCBA
-
-expected 'AGFEDCB' to equal 'GFEDCBA'
 
 */
