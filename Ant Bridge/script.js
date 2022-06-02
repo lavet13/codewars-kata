@@ -35,58 +35,40 @@ ants = ${ants}`);
       return array;
     };
 
-    const enoughSpaceForAnts = function (index) {
-      let counter = 0;
-
-      for (let i = index + 2; i < terrain.length; i++) {
-        counter++;
-      }
-
-      return counter;
-    };
-
     let gaps = calcAllGaps();
     console.log(gaps);
 
-    const antsGoThroughBridge = function (ants, length, index) {
+    const antsGoThroughBridge = function (ants, length) {
       let array = ants.split('');
       let bridge = [];
-      let cross = [];
       let remain = [];
+      let cross = [];
 
+      let counter = 0;
       let i = array.length - 1;
+
       for (; i >= array.length - (length + 2); i--) {
         bridge.push(array[i]); // method "push" reverse ant-bridges, which what i want at the beginning
-      }
-
-      const leftForAnts = enoughSpaceForAnts(index);
-      let counter = 0;
-
-      for (; i >= 0; i--) {
-        if (counter < leftForAnts) {
-          cross.unshift(array[i]); // doesn't save order of the elements
-        } else {
-          remain.unshift(array[i]); // save order of the elements
-        }
-
         counter++;
       }
 
-      for (let i = array.length - 1; i >= array.length - 2; i--) {
-        if (remain.length === 0) {
-          cross.unshift(array[i]);
-        } else {
-          remain.unshift(array[i]);
+      counter -= ants.length;
+
+      // recursion function https://www.freecodecamp.org/news/what-is-recursion-in-javascript/
+      const crossUntilEnds = function (index, count = 0) {
+        if (count > counter) {
+          return;
         }
 
+        remain.unshift(array[index]);
         bridge.shift();
-      }
+        count++;
+        index++;
 
-      cross.forEach(ant => {
-        bridge.unshift(ant);
-      });
+        crossUntilEnds(index, count);
+      };
 
-      bridge.reverse();
+      crossUntilEnds(i);
 
       // FIXME
       // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
@@ -97,14 +79,14 @@ ants = ${ants}`);
       return {
         bridge: bridge.join(''),
         remain: remain.join(''),
-        result: bridge.join('') + remain.join(''),
+        result: bridge.concat(remain).join(''),
       };
     };
 
-    gaps.forEach(({ length, index }) => {
-      ants = antsGoThroughBridge(ants, length, index).result;
-      console.log(ants);
-    });
+    // gaps.forEach(({ length, index }) => {
+    ants = antsGoThroughBridge(ants, length).result;
+    console.log(ants);
+    // });
 
     return ants;
   }
