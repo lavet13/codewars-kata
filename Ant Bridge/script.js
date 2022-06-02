@@ -35,6 +35,16 @@ ants = ${ants}`);
       return array;
     };
 
+    const enoughSpaceForAnts = function (index) {
+      let counter = 0;
+
+      for (let i = index + 2; i < terrain.length; i++) {
+        counter++;
+      }
+
+      return counter;
+    };
+
     let gaps = calcAllGaps();
     console.log(gaps);
 
@@ -49,27 +59,31 @@ ants = ${ants}`);
         bridge.push(array[i]); // method "push" reverse ant-bridges, which what i want at the beginning
       }
 
-      // TODO need to create some sort of loop that can compute how much left ants to cross the bridge until terrain allows
+      const leftForAnts = enoughSpaceForAnts(index);
+      let counter = 0;
+
       for (; i >= 0; i--) {
-        if (terrain[i] < terrain.length) {
-          // BUG
-          cross.push(array[i]);
+        if (counter < leftForAnts) {
+          cross.unshift(array[i]); // doesn't save order of the elements
         } else {
           remain.unshift(array[i]); // save order of the elements
         }
+
+        counter++;
       }
 
-      // console.log(remain); // array
-      // console.log(bridge); // array
-
       for (let i = array.length - 1; i >= array.length - 2; i--) {
-        remain.unshift(array[i]);
+        if (remain.length === 0) {
+          cross.unshift(array[i]);
+        } else {
+          remain.unshift(array[i]);
+        }
+
         bridge.shift();
       }
 
       cross.forEach(ant => {
-        // bridge.push(ant);
-        console.log(ant);
+        bridge.unshift(ant);
       });
 
       bridge.reverse();
@@ -77,8 +91,8 @@ ants = ${ants}`);
       // FIXME
       // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
 
-      console.log(remain); // array
-      console.log(bridge); // array
+      // console.log(remain); // array
+      // console.log(bridge); // array
 
       return {
         bridge: bridge.join(''),
