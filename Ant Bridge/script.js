@@ -52,16 +52,16 @@ ants = ${ants}`);
         counter++;
       }
 
-      counter -= ants.length;
-
+      console.log(ants.length, counter);
+      counter = ants.length - counter;
+      console.log(counter);
       // recursion function https://www.freecodecamp.org/news/what-is-recursion-in-javascript/
-      const crossUntilEnds = function (index, count = 0) {
+      const crossUntilEnds = function (index, count = 1) {
         if (count > counter) {
           return;
         }
 
         remain.unshift(array[index]);
-        bridge.shift();
         count++;
         index++;
 
@@ -70,6 +70,7 @@ ants = ${ants}`);
 
       crossUntilEnds(i);
 
+      console.log(remain);
       // FIXME
       // https://stackoverflow.com/questions/5767325/how-can-i-remove-a-specific-item-from-an-array
 
@@ -84,7 +85,7 @@ ants = ${ants}`);
     };
 
     // gaps.forEach(({ length, index }) => {
-    ants = antsGoThroughBridge(ants, length).result;
+    ants = antsGoThroughBridge(ants, gaps[0].length).result;
     console.log(ants);
     // });
 
