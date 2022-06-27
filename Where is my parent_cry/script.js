@@ -82,23 +82,33 @@ function findChildren(dancingBrigade) {
     return { counts, result };
   };
 
-  const concatLetters = function (upper, lower) {};
+  const concatLetters = function (upper, lower) {
+    const result = [];
+    let count;
+
+    upper.forEach(letter => {
+      count = lower.counts[letter.toLowerCase()];
+      result.push(letter);
+      for (let i = 0; i < count; i++) {
+        result.push(letter.toLowerCase());
+      }
+    });
+
+    return result.join('');
+  };
 
   const upperCases = findUpperCaseLetters(dancingBrigade.split('')); // since it's modifying original array
 
   if (!/[0-9]/g.test(dancingBrigade) && !hasDuplicates(upperCases)) {
-    console.log('пернул');
-
     const lowerCases = findLowerCaseLetters(dancingBrigade.split(''));
 
-    concatLetters(upperCases, lowerCases);
-
-    console.log(upperCases, lowerCases);
+    return concatLetters(upperCases, lowerCases);
   }
   return '';
 }
 
-findChildren('beeeEBb');
+console.log(findChildren('beeeEBb'));
 
 // https://stackoverflow.com/questions/7376598/in-javascript-how-do-i-check-if-an-array-has-duplicate-values
+// https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/in
