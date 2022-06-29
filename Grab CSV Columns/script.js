@@ -1,61 +1,58 @@
 'use strict';
 
-const createColumn = function (column) {
-  return column.split(',');
+const parseIntoArray = function (csv) {
+   const array = csv.split('\n');
+
+   return array.map(item => {
+      return item.split(',');
+   });
 };
-
-const findColumns = function (array, indices) {
-  // FIXME
-  const result = [];
-  let flag = false;
-
-  for (const index of indices) {
-    if (array[index]) {
-      result.push(array[index]);
-      flag = true;
-    }
-  }
-
-  return { result, flag };
-};
-
-const parseRows = row => row.join(',');
-const parseString = string => string.join('\n');
 
 function csvColumns(csv, indices) {
-  if (csv !== '') {
-    const array = csv.split('\n');
-    const columns = [];
-    let result = [];
+   let array = parseIntoArray(csv);
+   let result = [];
 
-    let flag = false;
+   const filterArray = function () {
+      let temp = [];
 
-    for (const column of array) {
-      columns.push(createColumn(column));
-    }
+      for(let index of indices) {
+         if(index < indices.length) {
+            temp.push(array.map(item => item[index]));
+         } else {
+            console.log("empty string");
+            continue;
+         }
+      }
 
-    for (const row of columns) {
-      // FIXME
-      flag = findColumns(row, indices).flag;
-      result.push(findColumns(row, indices).result);
-    }
+      array = [];
 
-    //  console.log(result); // test
+      for(let i = 0; i < temp[0].length; i++) {
+         array.push(temp.map(item => item[i]));
+      }
 
-    result = result.map(row => parseRows(row));
+      return array;
+   };
 
-    //  console.log(result); // test
+   result = filterArray();
 
-    result = result.reduce(
-      (previousValue, currentValue) => `${previousValue}\n${currentValue}`
-    );
-    //  console.log(result); // test
+   const parseBackToString = function () {
+      return result.map(item => item.join(',')).join('\n');
+   };
 
-    return result;
-  } else {
-    return '';
-  }
+   return result.length === 0 ? "" : parseBackToString();
 }
 
-// console.log(csvColumns("1,2,3\n4,5,6", [0, 1]));
-console.log(csvColumns('1,2\n3,4\n5,6', [5, 6, 7]));
+// csvColumns("1,2,3\n4,5,6", [0, 1]);
+// console.log(csvColumns('1,2\n3,4\n5,6', [5, 6, 7]));
+console.log(csvColumns("a,b,c,d,e\n1,2,3,4,5\nf,g,h,i,j", [1, 3, 5, 7]));
+
+
+/*
+
+for indices = [0,1]
+and csv = 
+"1,2,3
+4,5,6"
+: expected [ [ '1', '2' ], [ '4', '5' ] ] to equal '1,2\n4,5'
+
+*/
