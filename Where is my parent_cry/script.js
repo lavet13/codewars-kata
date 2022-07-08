@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 
 function findChildren(dancingBrigade) {
   const hasDuplicates = function (array) {
@@ -46,7 +46,7 @@ function findChildren(dancingBrigade) {
     let index;
 
     while (index !== -1) {
-      index = array.join('').search(/[a-z]/);
+      index = array.join("").search(/[a-z]/);
       if (index !== -1) {
         array.splice(index, 1);
       }
@@ -63,7 +63,7 @@ function findChildren(dancingBrigade) {
       letter;
 
     while (index !== -1) {
-      index = array.join('').search(/[a-z]/);
+      index = array.join("").search(/[a-z]/);
 
       if (index !== -1) {
         letter = array[index];
@@ -86,7 +86,7 @@ function findChildren(dancingBrigade) {
     const result = [];
     let count;
 
-    upper.forEach(letter => {
+    upper.forEach((letter) => {
       count = lower.counts[letter.toLowerCase()];
       result.push(letter);
       for (let i = 0; i < count; i++) {
@@ -94,24 +94,20 @@ function findChildren(dancingBrigade) {
       }
     });
 
-    return result.join('');
+    return result.join("");
   };
 
-  const upperCases = findUpperCaseLetters(dancingBrigade.split('')); // since it's modifying original array
+  const upperCases = findUpperCaseLetters(dancingBrigade.split("")); // since it's modifying original array
 
   if (!/[0-9]/g.test(dancingBrigade) && !hasDuplicates(upperCases)) {
-    const lowerCases = findLowerCaseLetters(dancingBrigade.split(''));
+    const lowerCases = findLowerCaseLetters(dancingBrigade.split(""));
 
     return concatLetters(upperCases, lowerCases);
   }
-  return '';
+  return "";
 }
 
-console.log(findChildren('beeeEBb'));
-
-
-
-
+console.log(findChildren("beeeEBb"));
 
 /*
 // FIXME
@@ -187,8 +183,8 @@ function rot13(str) {
 
 */
 
-
-
 // https://stackoverflow.com/questions/7376598/in-javascript-how-do-i-check-if-an-array-has-duplicate-values
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Global_Objects/Array/sort
 // https://developer.mozilla.org/ru/docs/Web/JavaScript/Reference/Operators/in
+
+// https://www.freecodecamp.org/news/how-to-clone-an-array-in-javascript-1d3183468f6a/
