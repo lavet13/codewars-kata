@@ -1,4 +1,5 @@
 'use strict';
+
 /*
   Complete the solution so that it strips all text that follows any of a set of comment markers passed in. Any whitespace at the end of the line should also be stripped out.
 
@@ -24,6 +25,7 @@ const getString = function (array) {
   return array.join('');
 };
 
+/*
 const deleteDuplicates = function (array) {
   let obj = {};
 
@@ -39,31 +41,28 @@ const deleteDuplicates = function (array) {
 
   return obj;
 };
+*/
 
 const getRidOfComments = function (input, markers) {
-  const result = [];
-  const other = [];
+  let result = [];
 
   markers.forEach(marker => {
-    let index = -1;
+    input.forEach(string => {
+      result.forEach(element => {
+        if (marker in element) {
+          element[marker].push(string);
+        }
 
-    input.forEach((string, ind) => {
-      if ((index = string.indexOf(marker)) !== -1) {
-        result.push(string.slice(0, index));
-      } else {
-        other.push({ s: string, i: ind });
-      }
+        result.push({ marker: [string] });
+        /*
+        [
+          {'#': [ "some string", "some string"]},
+          {'!': [ "some string", "some string"]},
+        ] 
+        */
+      });
     });
   });
-
-  console.log(other);
-  deleteDuplicates(other);
-
-  //other = other.filter(({ s }) => {});
-
-  //for (const { s, i } of other) {
-  //result.splice(i, 0, s);
-  //}
 
   return result;
 };
