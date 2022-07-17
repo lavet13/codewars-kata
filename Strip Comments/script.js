@@ -22,7 +22,7 @@ const getArray = function (input) {
 };
 
 const getString = function (array) {
-  return array.join('');
+  return '';
 };
 
 /*
@@ -43,36 +43,52 @@ const deleteDuplicates = function (array) {
 };
 */
 
-const getRidOfComments = function (input, markers) {
-  let result = [];
+const getComments = function (array, markers) {
+  let obj = {};
 
   markers.forEach(marker => {
-    input.forEach(string => {
-      result.forEach(element => {
-        if (marker in element) {
-          element[marker].push(string);
+    for (let string of array) {
+      if (marker in obj) {
+        if (string.indexOf(marker) !== -1) {
+          obj[marker].push(string);
         }
+        continue;
+      }
 
-        result.push({ marker: [string] });
-        /*
-        [
-          {'#': [ "some string", "some string"]},
-          {'!': [ "some string", "some string"]},
-        ] 
-        */
-      });
-    });
+      if (string.indexOf(marker) !== -1) {
+        obj[marker] = [string];
+      }
+      /*
+        {
+          '#': [ "some string", "some string"],
+          '!': [ "some string", "some string"],
+        } 
+      */
+    }
   });
+  console.log(obj);
 
-  return result;
+  return obj;
+};
+
+const getStringsWithoutComments = function (obj, array) {
+  for (let marker in obj) {
+  }
 };
 
 function solution(input, markers) {
-  let array = getArray(input);
-  array = getRidOfComments(array, markers);
+  const { ...parameters } = { input, markers };
+  // FIXME
+  console.log(parameters);
+  let array = getArray(parameters);
+  let obj = getComments(array, parameters);
+  array = getStringsWithoutComments(obj, array);
   return getString(array);
 }
 
 console.log(
-  solution('apples, pears # and bananas\ngrapes\nbananas !apples', ['#', '!'])
+  solution(
+    'apples, pears # and bananas\ngrapes\nbananas !apples\nsupa mobile !apples\nsupa drive !apples',
+    ['#', '!']
+  )
 );
