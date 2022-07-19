@@ -58,6 +58,7 @@ const getComments = function (array, markers) {
       if (string.indexOf(marker) !== -1) {
         obj[marker] = [string];
       }
+
       /*
         {
           '#': [ "some string", "some string"],
@@ -66,23 +67,71 @@ const getComments = function (array, markers) {
       */
     }
   });
+
   console.log(obj);
 
   return obj;
 };
 
 const getStringsWithoutComments = function (obj, array) {
-  for (let marker in obj) {
+  let result = { strings: [] };
+  let comments = [];
+
+  for (let array of Object.values(obj)) {
+    comments = comments.concat(array);
   }
+
+  result.strings = array.filter(string => {
+    // return comments.indexOf(string) === -1;
+    return !comments.includes(string);
+  });
+
+  console.log(result);
+
+  return result;
 };
 
+// indexOf works for array as well as for strings
+/*
+    // indexOf() method
+    var first = [ 1, 2, 3, 4, 5 ];
+    var second = [ 4, 5, 6 ];
+    
+    var difference = first.filter(x => second.indexOf(x) === -1);
+    console.log(difference);
+    
+    // Output: [ 1, 2, 3]
+*/
+
+/*
+    // ES7 includes() method
+    var first = [ 1, 2, 3, 4, 5 ];
+    var second = [ 4, 5, 6 ];
+
+    var difference = first.filter(x => !second.includes(x));
+    console.log(difference);
+
+    // Output: [ 1, 2, 3]
+*/
+
+/* 
+    // ES6 Set Object
+    var first = [ 1, 2, 3, 4, 5 ];
+    var second = [ 4, 5, 6 ];
+    
+    var b = new Set(second);
+    var difference = [...first].filter(x => !b.has(x));
+    
+    console.log(difference);
+    
+    // Output: [ 1, 2, 3]
+*/
+// https://www.techiedelight.com/find-difference-between-two-arrays-in-javascript/
+
 function solution(input, markers) {
-  const { ...parameters } = { input, markers };
-  // FIXME
-  console.log(parameters);
-  let array = getArray(parameters);
-  let obj = getComments(array, parameters);
-  array = getStringsWithoutComments(obj, array);
+  let array = getArray(input);
+  let obj = getComments(array, markers);
+  getStringsWithoutComments(obj, array);
   return getString(array);
 }
 
