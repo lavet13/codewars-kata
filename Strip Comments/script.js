@@ -156,6 +156,8 @@ const deleteComments = function (obj) {
   }
   // https://www.regular-expressions.info/anchors.html
   // https://www.regular-expressions.info/
+  // https://stackoverflow.com/questions/5963182/how-to-remove-spaces-from-a-string-using-javascript
+  // https://stackoverflow.com/questions/5964373/is-there-a-difference-between-s-g-and-s-g
 
   // okeyeg
   // for (let key in comments) {
