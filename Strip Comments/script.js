@@ -22,7 +22,7 @@ const getArray = function (input) {
 };
 
 const getString = function (array) {
-  return '';
+  return array.join('\n');
 };
 
 /*
@@ -47,16 +47,17 @@ const getComments = function (array, markers) {
   let obj = {};
 
   markers.forEach(marker => {
-    for (let string of array) {
+    for (let index in array) {
       if (marker in obj) {
-        if (string.indexOf(marker) !== -1) {
-          obj[marker].push(string);
+        if (array[index].indexOf(marker) !== -1) {
+          obj[marker].strings.push(array[index]);
+          obj[marker].indexes.push(index);
         }
         continue;
       }
 
-      if (string.indexOf(marker) !== -1) {
-        obj[marker] = [string];
+      if (array[index].indexOf(marker) !== -1) {
+        obj[marker] = { strings: [array[index]], indexes: [index] };
       }
 
       /*
@@ -74,11 +75,13 @@ const getComments = function (array, markers) {
 };
 
 const getStringsWithoutComments = function (obj, array) {
-  let result = { strings: [] };
+  let result = {};
   let comments = [];
 
-  for (let array of Object.values(obj)) {
-    comments = comments.concat(array);
+  console.log(obj);
+
+  for (let o of Object.values(obj)) {
+    comments = comments.concat(o.strings);
   }
 
   result.strings = array.filter(string => {
@@ -86,12 +89,16 @@ const getStringsWithoutComments = function (obj, array) {
     return !comments.includes(string);
   });
 
+  result.arrayComments = comments;
+  result.objComments = obj;
+
   console.log(result);
 
   return result;
 };
 
 // indexOf works for array as well as for strings
+// also indexOf similar to includes, except it returns boolean, meanwhile indexOf - index of the found element
 /*
     // indexOf() method
     var first = [ 1, 2, 3, 4, 5 ];
@@ -120,24 +127,59 @@ const getStringsWithoutComments = function (obj, array) {
     var second = [ 4, 5, 6 ];
     
     var b = new Set(second);
-    var difference = [...first].filter(x => !b.has(x));
-    
+    var difference = [...first].filter(x => !b.has(x)); // it's spread syntax, cause it's on right hand side of the assignment operator
+
     console.log(difference);
     
     // Output: [ 1, 2, 3]
 */
 // https://www.techiedelight.com/find-difference-between-two-arrays-in-javascript/
 
+const deleteComments = function (obj) {
+  let result = [];
+  console.log(obj);
+  let comments = obj.objComments;
+
+  for (let key in comments) {
+    for (let string of comments[key].strings) {
+      console.log(string);
+      let index = string.indexOf(key);
+      // result.push(
+      //   string
+      //     .slice(0, index)
+      //     .split('')
+      //     .filter(s => s.trim().length)
+      //     .join('')
+      // );
+      result.push(string.slice(0, index).replace(/\s$/g, '')); // delete last "space" character
+    }
+  }
+  // https://www.regular-expressions.info/anchors.html
+  // https://www.regular-expressions.info/
+
+  // okeyeg
+  // for (let key in comments) {
+  //   for (let index in comments[key]) {
+  //     console.log(index); // index
+  //     console.log(comments[key][index]); // string
+  //   }
+  // }
+
+  console.log(result);
+  return result;
+};
+
 function solution(input, markers) {
   let array = getArray(input);
   let obj = getComments(array, markers);
-  getStringsWithoutComments(obj, array);
-  return getString(array);
+  obj = getStringsWithoutComments(obj, array);
+  let arrayOfStrings = deleteComments(obj);
+  return getString(arrayOfStrings);
 }
 
 console.log(
   solution(
-    'apples, pears # and bananas\ngrapes\nbananas !apples\nsupa mobile !apples\nsupa drive !apples',
+    'apples, pears # and bananas\nbananas !apples\ngrapes\nsupa mobile !apples\nsupa drive !apples',
     ['#', '!']
   )
 );
