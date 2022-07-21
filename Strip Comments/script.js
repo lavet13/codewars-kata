@@ -136,24 +136,39 @@ const getStringsWithoutComments = function (obj, array) {
 // https://www.techiedelight.com/find-difference-between-two-arrays-in-javascript/
 
 const deleteComments = function (obj) {
-  let result = [];
-  console.log(obj);
-  let comments = obj.objComments;
-
-  for (let key in comments) {
-    for (let string of comments[key].strings) {
+  let result = { strings: [] };
+  let indexesArray = [];
+  for (const [marker, object] of Object.entries(obj)) {
+    const { strings, indexes } = object;
+    indexesArray = indexesArray.concat(indexes);
+    for (let string of strings) {
+      let index = string.indexOf(marker);
       console.log(string);
-      let index = string.indexOf(key);
-      // result.push(
-      //   string
-      //     .slice(0, index)
-      //     .split('')
-      //     .filter(s => s.trim().length)
-      //     .join('')
-      // );
-      result.push(string.slice(0, index).replace(/\s$/g, '')); // delete last "space" character
+      result.strings.push(string.slice(0, index).replace(/\s+$/g, '')); // delete last "space" character
     }
   }
+
+  result.indexes = indexesArray;
+
+  // for (let marker of markers) {
+  //   for (const { strings, indexes } of comments) {
+  //     for (let string of strings) {
+  //       // let index = string.indexOf(marker);
+  //       console.log(string);
+
+  //       // result.push(
+  //       //   strings
+  //       //     .slice(0, index)
+  //       //     .split('')
+  //       //     .filter(s => s.trim().length)
+  //       //     .join('')
+  //       // );
+
+  //       // result.push(string.slice(0, index).replace(/\s+$/g, '')); // delete last "space" character
+  //     }
+  //   }
+  // }
+
   // https://www.regular-expressions.info/anchors.html
   // https://www.regular-expressions.info/
   // https://stackoverflow.com/questions/5963182/how-to-remove-spaces-from-a-string-using-javascript
@@ -171,17 +186,35 @@ const deleteComments = function (obj) {
   return result;
 };
 
+const buildTheString = function (obj, array) {
+  const { strings, indexes } = obj;
+
+  let object = {};
+  for (let indexOfIndex in indexes) {
+    if (indexes[indexOfIndex] in object) {
+      continue;
+    }
+
+    object[indexes[indexOfIndex]] = strings[indexOfIndex];
+  }
+
+  for (const [index, string] of Object.entries(object)) {
+    array[index] = string;
+  }
+
+  return getString(array);
+};
+
 function solution(input, markers) {
   let array = getArray(input);
   let obj = getComments(array, markers);
-  obj = getStringsWithoutComments(obj, array);
-  let arrayOfStrings = deleteComments(obj);
-  return getString(arrayOfStrings);
+  obj = deleteComments(obj);
+  return buildTheString(obj, array);
 }
 
 console.log(
   solution(
-    'apples, pears # and bananas\nbananas !apples\ngrapes\nsupa mobile !apples\nsupa drive !apples',
+    'supa drive !apples\nbananas !apples\ngrapes\nsupa mobile !apples\napples, pears # and bananas',
     ['#', '!']
   )
 );
