@@ -17,137 +17,106 @@ The "and" in e.g. "one hundred and twenty-four" is optional, in some cases it's 
 All tested numbers are valid, you don't need to validate them
 */
 // https://stackoverflow.com/questions/4986654/multiple-conditions-in-ternary-operators
+// https://lingvister.ru/blog/kak-chitat-chisla-na-angliyskom-two-hundred-ili-two-hundreds
 
-const parseIntoNumber = function (string) {
-  const numbers = {
-    one: 1,
-    two: 2,
-    three: 3,
-    four: 4,
-    five: 5,
-    six: 6,
-    seven: 7,
-    eight: 8,
-    nine: 9,
-    ten: 10,
-    eleven: 11,
-    twelve: 12,
-    thirteen: 13,
-    fourteen: 14,
-    fifteen: 15,
-    sixteen: 16,
-    seventeen: 17,
-    eighteen: 18,
-    nineteen: 19,
-    twoDigit: {
-      twenty: 20,
-      thirty: 30,
-      forty: 40,
-      fifty: 50,
-      sixty: 60,
-      seventy: 70,
-      eighty: 80,
-      ninety: 90,
-    },
-    hundreds: {
-      'one hundred': 100,
-      'two hundred': 200,
-      'three hundred': 300,
-      'four hundred': 400,
-      'five hundred': 500,
-      'six hundred': 600,
-      'seven hundred': 700,
-      'eight hundred': 800,
-      'nine hundred': 900,
-    },
-  };
+const numbers = {
+  zero: 0,
+  one: 1,
+  two: 2,
+  three: 3,
+  four: 4,
+  five: 5,
+  six: 6,
+  seven: 7,
+  eight: 8,
+  nine: 9,
+  ten: 10,
+  eleven: 11,
+  twelve: 12,
+  thirteen: 13,
+  fourteen: 14,
+  fifteen: 15,
+  sixteen: 16,
+  seventeen: 17,
+  eighteen: 18,
+  nineteen: 19,
+  twenty: 20,
+  thirty: 30,
+  forty: 40,
+  fifty: 50,
+  sixty: 60,
+  seventy: 70,
+  eighty: 80,
+  ninety: 90,
+};
 
-  const getNumber = function (char) {
-    return numbers[char]
-      ? numbers[char]
-      : numbers.twoDigit[char]
-      ? numbers.twoDigit[char]
-      : numbers.hundreds[char];
-  };
+const getArray = function (string) {
+  return string.split(' ');
+};
 
-  const deleteZero = function (array) {
-    for (let i = array.length - 1; i >= 0; i--) {
-      if (array[i] === '0') {
-        array.splice(i, 1);
-      }
-    }
+const convertTwoDigitNumbers = function (string) {
+  let array = string.split('-');
 
-    return Number(array.join(''));
-  };
+  const deleteZero = string => Number(string.slice(0, 1));
 
-  const isHyphen = function (prop) {
-    return /-/.test(prop);
-  };
-
-  const isHundred = function (previous, next) {
-    // next - hundred
-    // previous - one, two, three, four, five
-    const prepair = `${previous} ${next}`;
-
-    return prepair;
-  };
-
-  const deleteHyphens = function (array) {
-    const result = [];
-
-    for (const { str: string, ind: index } of array) {
-      const splitted = string.split('-');
-
-      splitted.forEach(char => {
-        let number = getNumber(char);
-        if (/0/.test(number)) {
-          result.push(deleteZero(String(number).split('')));
-        } else {
-          result.push(number);
-        }
-      });
-    }
-
-    return result;
-  };
-
-  let array = string.split(' ');
-  let result;
-  let stringsWithHyphens = [];
-
-  result = array.map((string, index, array) => {
-    let prepair;
-
-    if (
-      (prepair = isHundred(string, array[index + 1])) &&
-      array[index + 1] !== undefined
-    ) {
-      for (let prop in numbers.hundreds) {
-        if (prop === prepair) {
-          return deleteZero(String(getNumber(prop)).split(''));
-        }
-      }
-    }
-
-    if (isHyphen(string)) {
-      let result;
-      stringsWithHyphens.push({ str: string, ind: index });
-      result = deleteHyphens(stringsWithHyphens);
-      return Number(result.join(''));
-    }
-
-    return Number(getNumber(string));
+  array = array.map(string => {
+    return String(numbers[string]).includes(0)
+      ? deleteZero(String(numbers[string]))
+      : numbers[string];
   });
 
-  result = result.filter(item => {
-    return /[0-9]/.test(item);
-  });
+  return Number(array.join(''));
+};
 
-  return result.join('');
+const getArrayOfNumbers = function (array) {
+  let obj = { strings: [], indexes: [] };
+
+  for (let index in array) {
+    if (array[index].includes('-')) {
+      obj.strings.push(convertTwoDigitNumbers(array[index]));
+      obj.indexes.push(index);
+      continue;
+    }
+
+    if (array[index].includes('hundred')) {
+      obj.strings.push('00');
+      obj.indexes.push(index);
+      continue;
+    }
+
+    if (array[index].includes('thousand')) {
+      obj.strings.push('000');
+      obj.indexes.push(index);
+      continue;
+    }
+
+    if (array[index].includes('million')) {
+      obj.strings.push('000000');
+      obj.indexes.push(index);
+      continue;
+    }
+
+    if (array[index].includes('and')) {
+      continue;
+    }
+
+    obj.strings.push(numbers[array[index]]);
+    obj.indexes.push(index);
+  }
+
+  return obj;
+};
+
+const getResult = function (obj) {
+  for (const [strings, indexes] of Object.entries(obj)) {
+    console.log(strings, indexes);
+  }
 };
 
 function parseInt(string) {
-  return Number(parseIntoNumber(string));
+  const array = getArray(string);
+  let obj = getArrayOfNumbers(array);
+  obj = getResult(obj);
 }
 
 console.log(
