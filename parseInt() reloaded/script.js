@@ -69,30 +69,26 @@ const convertTwoDigitNumbers = function (string) {
 };
 
 const getArrayOfNumbers = function (array) {
-  let obj = { strings: [], indexes: [] };
+  let obj = { strings: [] };
 
   for (let index in array) {
     if (array[index].includes('-')) {
       obj.strings.push(convertTwoDigitNumbers(array[index]));
-      obj.indexes.push(index);
       continue;
     }
 
     if (array[index].includes('hundred')) {
       obj.strings.push('00');
-      obj.indexes.push(index);
       continue;
     }
 
     if (array[index].includes('thousand')) {
       obj.strings.push('000');
-      obj.indexes.push(index);
       continue;
     }
 
     if (array[index].includes('million')) {
       obj.strings.push('000000');
-      obj.indexes.push(index);
       continue;
     }
 
@@ -101,26 +97,75 @@ const getArrayOfNumbers = function (array) {
     }
 
     obj.strings.push(numbers[array[index]]);
-    obj.indexes.push(index);
   }
 
   return obj;
 };
 
-const getResult = function (obj) {
-  for (const [strings, indexes] of Object.entries(obj)) {
-    console.log(strings, indexes);
+const getNecessaryInfo = function ({ strings }) {
+  let result = [];
+
+  let zeros = {},
+    numbers = {};
+
+  let obj = Object.fromEntries([...strings.entries()]);
+
+  for (const key in obj) {
+    typeof obj[key] === 'string' && (zeros[key] = obj[key]);
+    typeof obj[key] === 'number' && (numbers[key] = obj[key]);
   }
+
+  let zerosIndexesArray = Object.keys(zeros);
+  let numbersIndexesArray = Object.keys(numbers);
+
+  result.push(zeros, numbers, zerosIndexesArray, numbersIndexesArray);
+
+  return result;
+};
+
+const concat = function (array) {
+  const [zeros, numbers, zerosIndexesArray, numbersIndexesArray] = array;
+  let result = [];
+
+  const difference = function (number, zero) {
+    let splitNumber = String(number).split('');
+    let splitZero = zero.split('');
+    //console.log(zerosIndexesArray, numbersIndexesArray);
+
+    splitZero = splitZero.map((zero, index) => {
+      return splitNumber[index] || 0;
+    });
+    splitNumber = splitNumber.filter(number => !splitZero.includes(number));
+
+    // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
+    return splitNumber.length !== 0
+      ? { splitZero, splitNumber }
+      : { splitZero };
+  };
+
+  for (let zeroIndex of zerosIndexesArray) {
+    let numberIndex = +zeroIndex + 1;
+    let number = numbers[numberIndex];
+
+    result.push(difference(numbers[numberIndex], zeros[zeroIndex]));
+  }
+
+  return result;
 };
 
 function parseInt(string) {
-  const array = getArray(string);
+  let array = getArray(string);
   let obj = getArrayOfNumbers(array);
-  obj = getResult(obj);
+  // FIXME dataArray cause the problem with one hundred
+  let dataArray = getNecessaryInfo(obj);
+  array = concat(dataArray);
 }
 
-console.log(
-  parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
-);
+//console.log(
+//parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
+//);
+
+console.log(parseInt('one hundred'));
+//console.log(parseInt('one hundred one'));
 //console.log(parseInt('twenty'));
 //console.log(parseInt('two hundred forty-six'));
