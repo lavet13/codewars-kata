@@ -124,13 +124,8 @@ const getNecessaryInfo = function ({ strings }) {
 };
 
 const concat = function (array) {
-  /*
-   *
-   1. while loop if it's still contains zeros, so like redo until zeros will be gone
-
-    */
   const [zeros, numbers, zerosIndexesArray, numbersIndexesArray] = array;
-  let result = {};
+  let result = [];
 
   const difference = function (number, zero) {
     let splitNumber = String(number).split('');
@@ -143,7 +138,9 @@ const concat = function (array) {
     splitNumber = splitNumber.filter(number => !splitZero.includes(number));
 
     // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-    return splitNumber.length && splitZero;
+    return splitNumber.length !== 0
+      ? { splitZero, splitNumber }
+      : { splitZero };
   };
 
   for (let zeroIndex of zerosIndexesArray) {
@@ -153,15 +150,10 @@ const concat = function (array) {
 
     if (numbers[numberIndex]) {
       let number = numbers[numberIndex];
-      result = difference(numbers[numberIndex], zeros[zeroIndex]);
+      result.push(difference(numbers[numberIndex], zeros[zeroIndex]));
     } else {
-      result.push(zeros[zeroIndex]);
-      // one hundred here
     }
   }
-
-  result.unshift(numbers[0]);
-  console.log(result);
 
   return result;
 };
@@ -170,12 +162,14 @@ function parseInt(string) {
   let array = getArray(string);
   let obj = getArrayOfNumbers(array);
   let dataArray = getNecessaryInfo(obj);
-  console.log(dataArray);
   // FIXME dataArray cause the problem with one hundred
   array = concat(dataArray);
+  console.log(array);
 }
 
-parseInt('seven hundred eighty-three thousand nine hundred and nineteen');
+console.log(
+  parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
+);
 
 console.log(parseInt('one hundred'));
 //console.log(parseInt('one hundred one'));
