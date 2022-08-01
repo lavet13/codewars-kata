@@ -124,43 +124,92 @@ const getNecessaryInfo = function ({ strings }) {
 };
 
 const concat = function (array) {
-  /*
-   *
-   1. while loop if it's still contains zeros, so like redo until zeros will be gone
-
-    */
   const [zeros, numbers, zerosIndexesArray, numbersIndexesArray] = array;
   let result = {};
+
+  const hasZeros = function () {
+    const findZeros = function (obj) {
+      const arrays = Object.entries(obj);
+      let hasZero = false;
+
+      for (const [property, array] of arrays) {
+        hasZero = array.some(element => element === 0);
+        if (hasZero) return { array, property };
+      }
+
+      return false;
+    };
+
+    const { lastValue, firstValue, ...results } = result;
+    if (
+      results &&
+      Object.keys(results).length === 0 &&
+      Object.getPrototypeOf(results) === Object.prototype
+    )
+      return false;
+
+    // https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+
+    return findZeros(results);
+  };
+
+  const deleteZeros = function (obj) {
+    let { array, property } = obj;
+    obj.array = array.filter(element => element !== 0);
+    return obj;
+  };
 
   const difference = function (number, zero) {
     let splitNumber = String(number).split('');
     let splitZero = zero.split('');
+    console.log(splitNumber, splitZero);
     //console.log(zerosIndexesArray, numbersIndexesArray);
 
-    splitZero = splitZero.map((zero, index) => {
-      return splitNumber[index] || 0;
-    });
+    if (splitZero.length === 2) {
+      // some logic :D
+    } else {
+      splitZero = splitZero.map((zero, index) => {
+        // delete zeros after finding a number
+        return splitNumber[index] || 0;
+      });
+    }
+
     splitNumber = splitNumber.filter(number => !splitZero.includes(number));
 
+    /*
+     * Array.prototype.diff = function(a) {
+     *  return this.filter(x => a.indexOf(x) < 0); // if it less than 0 it's gonna get difference between two arrays, otherwise it's gonna be intersection
+     * }
+     * */
+
     // https://stackoverflow.com/questions/1187518/how-to-get-the-difference-between-two-arrays-in-javascript
-    return splitNumber.length && splitZero;
+    return splitNumber.length || splitZero;
   };
 
   for (let zeroIndex of zerosIndexesArray) {
     let numberIndex = +zeroIndex + 1;
 
-    console.log(numbers[numberIndex], zeros[zeroIndex]);
-
     if (numbers[numberIndex]) {
-      let number = numbers[numberIndex];
-      result = difference(numbers[numberIndex], zeros[zeroIndex]);
+      result[`result-${numberIndex}`] = difference(
+        numbers[numberIndex],
+        zeros[zeroIndex]
+      );
     } else {
-      result.push(zeros[zeroIndex]);
+      result.lastValue = zeros[zeroIndex];
       // one hundred here
     }
   }
 
-  result.unshift(numbers[0]);
+  result.firstValue = numbers[0];
+
+  let isArray = hasZeros();
+
+  while (isArray.array) {
+    let withoutZerosData = deleteZeros(isArray);
+    result[withoutZerosData.property] = withoutZerosData.array;
+    isArray = hasZeros();
+  }
+
   console.log(result);
 
   return result;
@@ -170,14 +219,13 @@ function parseInt(string) {
   let array = getArray(string);
   let obj = getArrayOfNumbers(array);
   let dataArray = getNecessaryInfo(obj);
-  console.log(dataArray);
-  // FIXME dataArray cause the problem with one hundred
   array = concat(dataArray);
 }
 
 parseInt('seven hundred eighty-three thousand nine hundred and nineteen');
 
-console.log(parseInt('one hundred'));
-//console.log(parseInt('one hundred one'));
-//console.log(parseInt('twenty'));
-//console.log(parseInt('two hundred forty-six'));
+parseInt('one hundred');
+// FIXME deleting zeros after finding a number and also place numbers in right order from 01 to 09
+parseInt('one hundred one');
+//parseInt('twenty');
+//parseInt('two hundred forty-six');
