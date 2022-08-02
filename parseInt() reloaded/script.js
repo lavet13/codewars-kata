@@ -132,7 +132,14 @@ const concat = function (array) {
       const arrays = Object.entries(obj);
       let hasZero = false;
 
-      for (const [property, array] of arrays) {
+      for (let [property, array] of arrays) {
+        for (let index in array) {
+          if (array[index] !== 0) {
+            array = array.slice(index);
+            break;
+          }
+        }
+
         hasZero = array.some(element => element === 0);
         if (hasZero) return { array, property };
       }
@@ -162,11 +169,14 @@ const concat = function (array) {
   const difference = function (number, zero) {
     let splitNumber = String(number).split('');
     let splitZero = zero.split('');
-    console.log(splitNumber, splitZero);
     //console.log(zerosIndexesArray, numbersIndexesArray);
 
     if (splitZero.length === 2) {
-      // some logic :D
+      let indexNumber = splitNumber.length - 1;
+      for (let index = splitZero.length - 1; index >= 0; index--) {
+        splitZero[index] = splitNumber[indexNumber] || 0;
+        indexNumber--;
+      }
     } else {
       splitZero = splitZero.map((zero, index) => {
         // delete zeros after finding a number
@@ -202,6 +212,8 @@ const concat = function (array) {
 
   result.firstValue = numbers[0];
 
+  console.log(result);
+
   let isArray = hasZeros();
 
   while (isArray.array) {
@@ -209,8 +221,6 @@ const concat = function (array) {
     result[withoutZerosData.property] = withoutZerosData.array;
     isArray = hasZeros();
   }
-
-  console.log(result);
 
   return result;
 };
@@ -225,7 +235,6 @@ function parseInt(string) {
 parseInt('seven hundred eighty-three thousand nine hundred and nineteen');
 
 parseInt('one hundred');
-// FIXME deleting zeros after finding a number and also place numbers in right order from 01 to 09
 parseInt('one hundred one');
 //parseInt('twenty');
 //parseInt('two hundred forty-six');
