@@ -108,7 +108,14 @@ const getNecessaryInfo = function ({ strings }) {
   let zeros = {},
     numbers = {};
 
-  let obj = Object.fromEntries([...strings.entries()]);
+  // https://github.com/tc39/proposal-object-from-entries
+  // i could use Object.fromEntries but seems not work for node v10.x
+  // let obj = Object.fromEntries([...strings.entries()]);
+
+  let obj = strings.reduce((previousValue, currentValue, index) => {
+    // previousValue, currentValue, index, array
+    return Object.assign(previousValue, { [index]: currentValue });
+  }, {});
 
   for (const key in obj) {
     typeof obj[key] === 'string' && (zeros[key] = obj[key]);
