@@ -212,8 +212,6 @@ const concat = function (array) {
 
   result.firstValue = numbers[0];
 
-  console.log(result);
-
   let isArray = hasZeros();
 
   while (isArray.array) {
@@ -225,16 +223,40 @@ const concat = function (array) {
   return result;
 };
 
+const convertBack = function (obj) {
+  // https://stackoverflow.com/questions/679915/how-do-i-test-for-an-empty-javascript-object
+  let result = [];
+  const { lastValue, firstValue, ...results } = obj;
+
+  result.push(firstValue);
+
+  let resultsArray = [];
+  if (Object.values(results).length !== 0) {
+    for (let arr of Object.values(results)) {
+      resultsArray = resultsArray.concat(arr);
+    }
+
+    result.push(resultsArray.join(''));
+  }
+
+  lastValue && result.push(lastValue);
+
+  return Number(result.join(''));
+};
+
 function parseInt(string) {
   let array = getArray(string);
   let obj = getArrayOfNumbers(array);
   let dataArray = getNecessaryInfo(obj);
-  array = concat(dataArray);
+  obj = concat(dataArray);
+  return convertBack(obj);
 }
 
-parseInt('seven hundred eighty-three thousand nine hundred and nineteen');
+console.log(
+  parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
+);
 
-parseInt('one hundred');
-parseInt('one hundred one');
+console.log(parseInt('one hundred'));
+console.log(parseInt('one hundred one'));
 //parseInt('twenty');
 //parseInt('two hundred forty-six');
