@@ -131,9 +131,6 @@ const getNecessaryInfo = function ({ strings }) {
 };
 
 const concat = function (array) {
-  const [zeros, numbers, zerosIndexesArray, numbersIndexesArray] = array;
-  let result = {};
-
   const hasZeros = function () {
     const findZeros = function (obj) {
       const arrays = Object.entries(obj);
@@ -203,28 +200,44 @@ const concat = function (array) {
     return splitNumber.length || splitZero;
   };
 
+  const [zeros, numbers, zerosIndexesArray, numbersIndexesArray] = array;
+
+  let result = {};
+  result.firstValue = numbers[0];
+  numbersIndexesArray.splice(0, 1);
+  let atLeastOneNumber = false;
+
   for (let zeroIndex of zerosIndexesArray) {
     let numberIndex = +zeroIndex + 1;
 
     if (numbers[numberIndex]) {
+      atLeastOneNumber = true;
       result[`result-${numberIndex}`] = difference(
         numbers[numberIndex],
         zeros[zeroIndex]
       );
     } else {
       result.lastValue = zeros[zeroIndex];
-      // one hundred here
     }
   }
 
-  result.firstValue = numbers[0];
+  if (!atLeastOneNumber) {
+    // some logic
+    for (let zeroIndex of zerosIndexesArray) {
+      result[`result-${zeroIndex}`] = zeros[zeroIndex];
+    }
 
-  let isArray = hasZeros();
+    Number(result.lastValue) === 0 ? delete result.lastValue : 0;
+  }
 
-  while (isArray.array) {
-    let withoutZerosData = deleteZeros(isArray);
-    result[withoutZerosData.property] = withoutZerosData.array;
-    isArray = hasZeros();
+  if (atLeastOneNumber) {
+    let isArray = hasZeros();
+
+    while (isArray.array) {
+      let withoutZerosData = deleteZeros(isArray);
+      result[withoutZerosData.property] = withoutZerosData.array;
+      isArray = hasZeros();
+    }
   }
 
   return result;
@@ -259,11 +272,13 @@ function parseInt(string) {
   return convertBack(obj);
 }
 
-console.log(
-  parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
-);
+// console.log(
+//   parseInt('seven hundred eighty-three thousand nine hundred and nineteen')
+// );
 
-console.log(parseInt('one hundred'));
-console.log(parseInt('one hundred one'));
+// console.log(parseInt('one hundred'));
+// console.log(parseInt('one hundred one'));
+console.log(parseInt('seven hundred thousand'));
+console.log(parseInt('two hundred thousand three'));
 //parseInt('twenty');
 //parseInt('two hundred forty-six');
