@@ -6,33 +6,39 @@
 // }, {});
 
 let map = new Map().set('foo', true).set('bar', false);
-for (let element of map) {
-  // so again nothing special, so without values method which returns iterator object works as expected
-  console.log(element);
+console.log(map);
+
+for (let [key, value] of map) {
+  // if map used an entries method it didn't change the whole picture of what we might expect, but i think in certain cases it's good to use when we need next() method of Map Iterator etc.
+  // it's similar as if it was array.entries cause it was also have index with value, clueless
+  console.log(key, value);
 }
 
-// map have keys, values methods
-let arr = Array.from(map); // similar what all i did back then is was Object.entries();
+// map have keys, values methods, and also has entries method(do the same thing) which in some cases can be useful
+let arr = Array.from(map); // similar, as above
 console.log(arr);
 
-// let set = new Set(map); // entries are arrays which we don't want at all
-let set = new Set(map.values());
+// let set = new Set(map); // map itself has key value pairs, which isn't useful in the set data structure
+let set = new Set(map.values()); // Map Iterator which has values
 
 // getting index along with key value pairs
-for (let value of arr.entries()) {
-  console.log(value);
+for (let [key, [property, value]] of arr.entries()) {
+  // arr itself has key value pairs, and we trying to get index while using entries on the array
+  console.log(key, property, value);
 }
 
 //console.log(arr.values()); // Array Iterator
 
 //getting key value pairs
-//for (let value of arr.values()) {
-//console.log(value);
+//for (let array of arr.values()) {
+// // Array Iterator which has next() method
+// // similar as if it was a map
+//console.log(array);
 //}
 
-//getting key value pairs, similar as above
-//for (let value of arr) {
-//console.log(value);
+//getting key value pairs, similar as above but without having next, return and throw methods
+//for (let array of arr) {
+//console.log(array);
 //}
 
 console.log(arr);
