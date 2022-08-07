@@ -1,11 +1,40 @@
 'use strict';
 
-int32ToIp(2149583361); // 10000000.00100000.00001010.00000001
+console.log(int32ToIp(2149583361)); // 10000000.00100000.00001010.00000001
 
 function int32ToIp(int32) {
-  let map = getTheJuice(202);
-  if (map.size === 0) return;
-  console.log(map);
+  const template = '--------.--------.--------.--------';
+
+  let map = getTheJuice(int32);
+  if (map.size === 0) return '0.0.0.0';
+
+  let binaryArray = Array.from(map.values());
+
+  let templateArray = getTemplate(template);
+  console.log(templateArray, binaryArray);
+
+  // FIXME haven't found solution yet, but close to win easily for sure 🙄
+  //binaryArray = getBinaryArray(binaryArray, templateArray);
+  // so getBinaryArray method is basically the same code as below
+
+  let diffIndex = 0;
+
+  binaryArray = templateArray.map((hyphen, index) => {
+    if (hyphen === '.') {
+      diffIndex++;
+      return '.';
+    }
+
+    return binaryArray[index - diffIndex] ?? (hyphen === '-' ? 0 : '.');
+  });
+
+  console.log(binaryArray);
+
+  binaryArray = getBinaryString(binaryArray);
+
+  let decimalNumbers = getDecimalNumbers(binaryArray);
+
+  return decimalNumbers.join('.');
 }
 
 function getTheJuice(number) {
@@ -30,11 +59,68 @@ function getTheJuice(number) {
 
       result.set(number, decimalPortion);
       number = Math.floor(number / 2);
+
       if (number === 0 || number === 1) {
-        result.set(number, number); // literally don't know even that need to be this way or probably i am just stupid
+        decimalPortion = number % 2;
+        result.set(number, decimalPortion);
+
         break;
       }
     }
+  }
+
+  return result;
+}
+
+function getTemplate(template) {
+  let concatenate = [];
+
+  template = template.split('');
+
+  for (let array of template) {
+    concatenate = concatenate.concat(array);
+  }
+
+  return concatenate;
+}
+
+function getBinaryString(binaryArray) {
+  return binaryArray.join('').split('.');
+  //return binaryArray.join(' ').replace(/\s/g, '').split('.');
+  // https://stackoverflow.com/questions/6507056/replace-all-whitespace-characters
+}
+
+//function getBinaryArray(binaryArray, templateArray) {
+//console.log(binaryArray, templateArray);
+//let result = [];
+//let diffIndex = 0;
+
+//for (let index = 0; index < templateArray.length; index++) {
+//if (templateArray[index] === '.') {
+//diffIndex++;
+//result.push('.');
+//continue;
+//}
+
+//result.push(
+//binaryArray[index - diffIndex] ?? (templateArray[index] === '-' ? 0 : '.')
+//);
+//}
+
+//return result;
+//}
+
+function getDecimalNumbers(binaryArray) {
+  let result = [];
+
+  for (let string of binaryArray) {
+    let sum = 0;
+
+    for (let [index, number] of string.split('').entries()) {
+      sum += +number * 2 ** index;
+    }
+
+    result.unshift(sum);
   }
 
   return result;
