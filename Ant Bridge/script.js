@@ -1,13 +1,68 @@
 'use strict';
 
 function antBridge(ants, terrain) {
-  let map = new Map();
-  let data = getBridgeArray(terrain);
-  console.log(data);
+  let bridge = getBridgeArray(terrain),
+    ground = getGroundArray(terrain, bridge);
+  let antsArray = ants.split('');
+
+  console.log(bridge, ground, antsArray);
+
+  let diffIndex;
+  const increaseDiffIndex = () =>
+    diffIndex <= antsArray.length ? diffIndex++ : (diffIndex = 1);
+  //while (
+  //bridge.join('').search(/[a-g]/gi) !== -1 ||
+  //ground.join('').search(/[a-g]/gi) !== -1
+  //) {
+  diffIndex = 1;
+
+  let [firstEdge, secondEdge] = ground;
+  let [oneBridge] = bridge;
+
+  if (firstEdge) {
+    firstEdge = firstEdge.split('');
+
+    firstEdge.splice(
+      firstEdge.length - 1,
+      1,
+      antsArray[antsArray.length - diffIndex]
+    );
+
+    increaseDiffIndex();
+
+    oneBridge = oneBridge.split('');
+
+    for (const [i, dot] of oneBridge.entries()) {
+      oneBridge[i] = antsArray[antsArray.length - diffIndex];
+      increaseDiffIndex();
+    }
+
+    // cut the array here
+
+    if (secondEdge) {
+      secondEdge = secondEdge.split('');
+      secondEdge.splice(0, 1, antsArray[antsArray.length - diffIndex]);
+      // FIXME
+    }
+  }
+
+  antsArray = [];
+
+  antsArray[0] = firstEdge[firstEdge.length - 1];
+
+  for (const [i] of oneBridge.entries()) {
+    antsArray.push(oneBridge[i]);
+  }
+
+  antsArray.push(secondEdge[0]);
+
+  console.log(firstEdge, oneBridge, secondEdge);
+  console.log(antsArray);
+  //}
 }
 
 const getBridgeArray = function (terrain) {
-  let bridgesArray = [];
+  let bridgeArray = [];
 
   while (terrain.indexOf('.') !== -1) {
     let bridge = terrain.slice(
@@ -15,12 +70,22 @@ const getBridgeArray = function (terrain) {
       terrain.indexOf('-', terrain.indexOf('.'))
     ); // string
 
-    bridgesArray.push(bridge);
+    bridgeArray.push(bridge);
 
     terrain = terrain.slice(terrain.indexOf('-', terrain.indexOf('.')));
   }
 
-  return bridgesArray;
+  return bridgeArray;
+};
+
+const getGroundArray = function (terrain, bridge) {
+  for (let b of bridge) {
+    terrain = terrain.replace(b, 'b');
+  }
+
+  terrain = terrain.split('b');
+  //terrain[0] = [...new Set(terrain[0].split(''))].join('');
+  return terrain;
 };
 
 console.log(`result is ${antBridge('GFEDCBA', '----...-----...----..-----')}`);
