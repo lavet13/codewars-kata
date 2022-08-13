@@ -42,22 +42,22 @@ function antBridge(ants, terrain) {
     if (secondEdge) {
       secondEdge = secondEdge.split('');
       secondEdge.splice(0, 1, antsArray[antsArray.length - diffIndex]);
-      // FIXME
     }
+
+    antsArray = [];
+
+    antsArray[0] = firstEdge[firstEdge.length - 1];
+
+    for (const [i] of oneBridge.entries()) {
+      antsArray.push(oneBridge[i]);
+    }
+
+    antsArray = antsArray.slice(0, antsArray.length - diffIndex);
+    antsArray.push(secondEdge[0]);
+
+    console.log(firstEdge, oneBridge, secondEdge);
+    console.log(antsArray);
   }
-
-  antsArray = [];
-
-  antsArray[0] = firstEdge[firstEdge.length - 1];
-
-  for (const [i] of oneBridge.entries()) {
-    antsArray.push(oneBridge[i]);
-  }
-
-  antsArray.push(secondEdge[0]);
-
-  console.log(firstEdge, oneBridge, secondEdge);
-  console.log(antsArray);
   //}
 }
 
