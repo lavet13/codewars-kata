@@ -19,6 +19,7 @@ function antBridge(ants, terrain) {
   };
 
   let bridgeArray = getBridge(terrain);
-  console.log(bridgeArray);
+  let antsArray = ants.split('');
+  console.log(bridgeArray, antsArray);
 }
-console.log(`result is ${antBridge('GFEDCBA', '----.-.---...----..-----')}`);
+console.log(`result is ${antBridge('GFEDCBA', '------....-.---')}`);
