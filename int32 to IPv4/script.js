@@ -25,7 +25,7 @@ function int32ToIp(int32) {
       return '.';
     }
 
-    return binaryArray[index - diffIndex] ?? (hyphen === '-' ? 0 : '.');
+    return binaryArray[index - diffIndex];
   });
 
   console.log(binaryArray);
@@ -55,7 +55,7 @@ function getTheJuice(number) {
 
     while (true) {
       decimalPortion = number % 2;
-      // let decimalPortion = (number % 1).toFixed(4).substring(2);
+      // let decimalPortion = (number % 1).toFixed(4).substring(2); // what is this? FIXME
 
       result.set(number, decimalPortion);
       number = Math.floor(number / 2);
@@ -103,7 +103,7 @@ function getBinaryString(binaryArray) {
 //}
 
 //result.push(
-//binaryArray[index - diffIndex] ?? (templateArray[index] === '-' ? 0 : '.')
+//binaryArray[index - diffIndex]
 //);
 //}
 
