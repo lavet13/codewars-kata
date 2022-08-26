@@ -2,7 +2,12 @@
 
 const simplify = function (string) {
   const expression = getSumsSubstractions(string);
-  const sums = sumsCalc(expression.sums);
+
+  const sumsMap = mappingValues(expression.sums);
+  console.log(sumsMap);
+
+  const subsMap = mappingValues(expression.substractions);
+  console.log(subsMap);
 };
 
 const getSumsSubstractions = function (string) {
@@ -23,7 +28,9 @@ const getSumsSubstractions = function (string) {
     .filter(array => {
       return array.length !== 0;
     })
-    .flat(1);
+    .flat();
+
+  console.log(`substractions: ${substractions}, sums: ${sums}`);
 
   return {
     substractions,
@@ -31,25 +38,26 @@ const getSumsSubstractions = function (string) {
   };
 };
 
-const sumsCalc = function (sums) {
-  sums.forEach((expr, i, arr) => {
-    const chars = expr.slice(1);
-    if (chars.length > 2) {
-      /*
-      3 * 2 = 6?
-      abc
-      acb
-      cab
-      cba
-      bca
-      bac
-       */
+const mappingValues = function (arr) {
+  const map = new Map();
+
+  arr.forEach((element, i, arr) => {
+    let decimals = element.match(/\d/g)?.join('');
+    decimals ??= 1;
+    decimals = Number(decimals);
+    let chars = element.match(/\D/g)?.join('');
+    if (chars) {
+      if (!map.has(chars)) {
+        map.set(chars, decimals);
+      } else {
+        map.set(chars, map.get(chars) + decimals);
+      }
     } else {
-      // ab === ba
-      // if(chars === arr[i + 1] || ) {
-      // }
+      map.set('no-char', decimals);
     }
   });
+
+  return map;
 };
 
-simplify('-a+5ab+3a-c-2a');
+simplify('-5a+15abc+3a-c-2a+15');
