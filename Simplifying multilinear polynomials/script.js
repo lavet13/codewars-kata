@@ -90,6 +90,17 @@ const calculateMaps = function ({ sumsMap, subsMap }) {
     }
   });
 
+  subsMap.forEach((_, key) => {
+    if (subsMap.get(key) === 0) subsMap.delete(key);
+  });
+
+  sumsMap.forEach((value, key, arr) => {
+    if (value < 0) {
+      subsMap.set(key, Math.abs(arr.get(key)));
+      arr.delete(key);
+    }
+  });
+
   return { sumsMap, subsMap };
 };
 
@@ -154,5 +165,6 @@ const concatMaps = function ({ sumsMap, subsMap }) {
 //simplify('-a+5ab+3a-c-2a');
 //simplify('-abc+3a+2ac');
 //simplify('xyz-xz');
-simplify('a+ca-ab');
-simplify('xzy+zby');
+//simplify('a+ca-ab');
+//simplify('xzy+zby');
+simplify('-8fk-4yk-qk-3vqy+5kv+7kf+yqv+4ky+4kf+yvqkf');
