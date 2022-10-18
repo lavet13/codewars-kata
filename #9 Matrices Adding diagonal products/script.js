@@ -6,7 +6,11 @@ function sumProdDiags(matrix) {
 }
 
 const calc = function (matrix) {
-    console.log(matrix.reduce((arr, cur, i) => {}, []));
+    for (let i = 0; i < matrix.length; i++) {
+        for (let j = 0; j < i; j++) {
+            console.log(matrix[i][j]);
+        }
+    }
 };
 
 console.log(
