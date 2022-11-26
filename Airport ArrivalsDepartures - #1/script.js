@@ -11,16 +11,17 @@ function flapDisplay(lines, rotors) {
         let temp = ``;
 
         rotor.forEach((num, i) => {
-            for (let char of arr) {
+            for (const char of arr) {
                 if (i === 0)
                     temp += string[string.indexOf(char.toUpperCase()) + num];
-                if (i !== 0)
-                    temp +=
-                        string[
-                            string.indexOf(
-                                result[i - 1].slice(i).toUpperCase()
-                            ) + num
-                        ];
+                if (i !== 0) {
+                    const getPreviousString = result[i - 1].slice(i);
+
+                    for (const char of getPreviousString.split('')) {
+                        temp +=
+                            string[string.indexOf(char.toUpperCase()) + num];
+                    }
+                }
             }
 
             result.push(temp);
