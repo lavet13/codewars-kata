@@ -2,25 +2,38 @@
 
 function flapDisplay(lines, rotors) {
     const string = `ABCDEFGHIJKLMNOPQRSTUVWXYZ ?!@#&()|<>.:=-+*/0123456789`;
+
+    const getChar = index => {
+        if (index > string.length - 1) {
+            return getChar(index - (string.length - 1) - 1);
+        }
+        return index;
+    };
+
     let result = [];
-    let findChar;
+    let temp = ``;
 
     lines.forEach((word, i) => {
         const rotor = rotors[i];
-        const arr = word.split('');
-        let temp = ``;
 
+        let chars = word.split('');
         rotor.forEach((num, i) => {
-            for (const char of arr) {
+            for (const char of chars) {
                 if (i === 0)
                     temp += string[string.indexOf(char.toUpperCase()) + num];
                 if (i !== 0) {
                     const getPreviousString = result[i - 1].slice(i);
+                    temp = result[i - 1].slice(0, i);
 
                     for (const char of getPreviousString.split('')) {
                         temp +=
-                            string[string.indexOf(char.toUpperCase()) + num];
+                            string[
+                                getChar(
+                                    string.indexOf(char.toUpperCase()) + num
+                                )
+                            ];
                     }
+                    continue;
                 }
             }
 
