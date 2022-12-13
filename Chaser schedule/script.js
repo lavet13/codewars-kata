@@ -13,8 +13,15 @@ function solution(s, t) {
         str = str.split('');
         console.log(str);
 
-        for (let i = t; i > 0; i--) {
-            temp = str.splice(i, 1);
+        for (let i = t - 1; i >= 0; i--) {
+            if (str.indexOf(1) === -1) {
+                temp = str.splice(i, 1);
+                str.splice(i, 0, 1);
+                result.push(str.join(''));
+                continue;
+            }
+
+            temp = str.splice(str.indexOf(1), 1);
             str.splice(i, 0, 1);
             result.push(str.join(''));
         }
@@ -25,7 +32,7 @@ function solution(s, t) {
     createSeq(t);
 }
 
-console.log(solution(2, 4)); // 10
+console.log(solution(2, 6)); // 10
 
 /*
     Example:
