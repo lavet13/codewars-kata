@@ -19,7 +19,7 @@ const calcShit = function (...numbers) {
         return acc;
     }, xmin);
 
-    // Расчет объем выборки
+    // Объем выборки
     const nCounts = new Array(k).fill(0);
 
     numbers.forEach(number => {
@@ -30,7 +30,7 @@ const calcShit = function (...numbers) {
         }
     });
 
-    // Объем выборки
+    // убеждаемся что ничего не потеряно(объем выборки)
     const nOverall = nCounts.reduce((acc, cur) => acc + cur, 0);
 
     // Относительные частоты
@@ -44,10 +44,16 @@ const calcShit = function (...numbers) {
     const histogramRelativeFrequency = relativeFrequency.map(
         rel => +(rel / deltaX).toFixed(2)
     );
-    const overAllHistogram = histogramRelativeFrequency.reduce(
-        (acc, cur) => acc + cur,
-        0
-    );
+
+    // Площадь гистограммы относительных частот
+    const overAllHistogram = (
+        deltaX *
+        relativeFrequency
+            .map(count => count / deltaX)
+            .reduce((acc, cur) => acc + cur, 0)
+    ).toFixed(0);
+
+    console.log(relativeFrequency.map(count => (count / deltaX).toFixed(2)));
 
     console.log(`Интервалы: `);
     console.log(intervals);
@@ -61,8 +67,9 @@ const calcShit = function (...numbers) {
     console.log(overAllFrequency);
     console.log(`Гистограмма относительных частот: `);
     console.log(histogramRelativeFrequency);
-    console.log(`Проверка гистограммы относительных частот:`);
-    console.log(overAllHistogram);
+    console.log(
+        `Площадь гистограммы относительных частот равна ${overAllHistogram}`
+    );
 };
 
 calcShit(
